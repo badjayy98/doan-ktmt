@@ -152,6 +152,8 @@ public:
 		return binary;
 	}
 
+
+
 	// Chuyển số QInt dương thành QInt âm
 	QInt SoBu2()
 	{
@@ -174,6 +176,11 @@ public:
 		//}
 		//result.data[0] = (data[0] << n) | (0 >> (32 - n));
 		//return result;
+
+		if (n > 128)
+		{
+			return QInt("0");
+		}
 
 		string binary = convertToBinary();
 
@@ -198,6 +205,10 @@ public:
 	// Toán tử >>
 	QInt operator >> (int n)
 	{
+		if (n > 128)
+		{
+			return QInt("0");
+		}
 		string binary = convertToBinary();
 		while (binary.size() != 128)
 		{
@@ -546,6 +557,14 @@ public:
 		}
 
 		return thuong; 
+	}
+
+	// Toán tử %
+	QInt operator %(QInt s)
+	{
+		QInt thuong = *this / s; 
+		QInt sodu = *this - (s * thuong);
+		return sodu;
 	}
 };
 

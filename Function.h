@@ -352,6 +352,185 @@ string NhanHaiChuoi(string s1, string s2)
 }
 
 
+// Chia 1 chuỗi cho 2 
+string Division2(string number)
+{
+    if (number < "2" && number.size() == 1)
+    {
+        return "0";
+    }
+    string ans;
+
+    int idx = 0;
+    int temp = number[idx] - '0';
+    while (temp < 2)
+        temp = temp * 10 + (number[++idx] - '0');
+
+    // Repeatedly divide 2 with temp. After  
+    // every division, update temp to include one  
+    // more digit. 
+    while (number.size() > idx)
+    {
+        // Store result in answer i.e. temp / divisor 
+        ans += (temp / 2) + '0';
+
+        // Take next digit of number 
+        temp = (temp % 2) * 10 + number[++idx] - '0';
+    }
+
+    // If divisor is greater than number 
+    if (ans.length() == 0)
+        return "0";
+
+    // else return ans 
+    return ans;
+}
+
+// Kiểm tra chuỗi có phải số chẵn 
+bool isEven(string number)
+{
+    return (number[number.size() - 1] - '0') % 2 == 0;
+}
+
+// Chuyển chuỗi decimal thành chuỗi binary
+string decimalToBinary(string decimal)
+{
+    string result = "";
+
+    if (decimal[0] == '-')
+    {
+        decimal.erase(decimal.begin());
+    }
+
+    while (decimal > "0")
+    {
+        if (isEven(decimal))
+        {
+            result += '0';
+        }
+        else
+        {
+            result += '1';
+        }
+        decimal = Division2(decimal);
+    }
+    reverseStr(result);
+    return result;
+}
+
+// Chuyển chuỗi hex thành chuỗi binary
+string hexToBinary(string hex)
+{
+    string result; 
+    for (int i = 0; i < hex.size(); i++)
+    {
+        if (hex[i] == '1')//1
+        {
+            result = result + "0001";
+        }
+        else
+        {
+            if (hex[i] == '2')
+            {
+                result = result + "0010";
+            }
+            else
+            {
+                if (hex[i] == '3')//3
+                {
+                    result = result + "0011";
+                }
+                else
+                {
+                    if (hex[i] == '4')//4
+                    {
+                        result = result + "0100";
+                    }
+                    else
+                    {
+                        if (hex[i] == '5')//5
+                        {
+                            result = result + "0101";
+                        }
+                        else
+                        {
+                            if (hex[i] == '6')//6
+                            {
+                                result = result + "0110";
+                            }
+                            else
+                            {
+                                if (hex[i] == '7')//7
+                                {
+                                    result = result + "0111";
+                                }
+                                else
+                                {
+                                    if (hex[i] == '8')//8
+                                    {
+                                        result = result + "1000";
+                                    }
+                                    else
+                                    {
+                                        if (hex[i] == '9')//9
+                                        {
+                                            result = result + "1001";
+                                        }
+                                        else
+                                        {
+                                            if (hex[i] == 'A')//10
+                                            {
+                                                result = result + "1010";
+                                            }
+                                            else
+                                            {
+                                                if (hex[i] == 'B')//11
+                                                {
+                                                    result = result + "1011";
+                                                }
+                                                else
+                                                {
+                                                    if (hex[i] == 'C')//12
+                                                    {
+                                                        result = result + "1100";
+                                                    }
+                                                    else
+                                                    {
+                                                        if (hex[i] == 'D')//13
+                                                        {
+                                                            result = result + "1101";
+                                                        }
+                                                        else
+                                                        {
+                                                            if (hex[i] == 'E')//14
+                                                            {
+                                                                result = result + "1110";
+                                                            }
+                                                            else
+                                                            {
+                                                                if (hex[i] == 'F')//15
+                                                                {
+                                                                    result = result + "1111";
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result; 
+}
+
+
 // Tính 2^n
 string LuyThua2(int n)
 {
@@ -376,4 +555,3 @@ string LuyThua2(int n)
     return result; 
 
 }
-

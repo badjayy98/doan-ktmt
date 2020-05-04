@@ -1,71 +1,7 @@
 ﻿#include "QInt.h"
 
-// Đổi 1 QInt sang dạng nhị phân
-
-string convertToBinary(QInt s)
-{
-	bool startPrint = false; 
-	vector<uint32_t> data = s.getData();
-	string binary;
-	for (int i = data.size() - 1; i >= 0; i--)
-	{
-		if (data[i] != 0)
-		{
-			startPrint = true;
-			
-		}
-		if (startPrint)
-		{
-			for (int j = 0; j < 32; j++)
-			{
-				int bitNow = ((data[i] >> (31 - j)) & 1);
-				binary.push_back(bitNow + '0');
-			}
-		}
-
-	}
-
-	// Xoá các bit 0 đầu chuỗi
-	if (binary.find('1') != string::npos)
-	{
-		binary.erase(binary.begin(), binary.begin() + binary.find('1'));
-	}
-	else
-	{
-		return "0";
-	}
-
-	return binary;
-}
 
 
-// Convert 1 chuỗi binary thành 1 QInt
-QInt convertToDecimal(string Binary)
-{
-	QInt result;
-	string temp;
-	int position = 3;
-
-	if (Binary.size() > 128)
-	{
-		cout << "Khong the luu so lon hon 128 bit" << endl;
-		return result;
-	}
-
-	while (Binary.size() != 128)
-	{
-		Binary.insert(Binary.begin(), '0');
-	}
-
-	for (int i = 0; i < Binary.size(); i = i + 32)
-	{
-		temp = Binary.substr(i, 32);
-		result.setData(position, binaryToDecimal(temp));
-		position--;
-		temp.clear();
-	}
-	return result;
-}
 
 
 // Convert 1 chuỗi binary thành 1 chuỗi hexadecimal
@@ -204,16 +140,126 @@ string convertBinaryToHex(string binary)
 }
 
 
-// Convert 1 số QInt thành dạng thập lục phân
-string convertDecimalToHex(QInt s)
+
+
+
+
+
+
+
+
+
+
+// Chuyển đổi chuỗi thành QInt
+
+// Convert 1 chuỗi binary thành 1 QInt
+QInt convertToDecimal(string Binary)
 {
-	string binary = convertToBinary(s);
-	return convertBinaryToHex(binary);
+	QInt result;
+	string temp;
+	int position = 3;
+
+	if (Binary.size() > 128)
+	{
+		cout << "Khong the luu so lon hon 128 bit" << endl;
+		return result;
+	}
+
+	while (Binary.size() != 128)
+	{
+		Binary.insert(Binary.begin(), '0');
+	}
+
+	for (int i = 0; i < Binary.size(); i = i + 32)
+	{
+		temp = Binary.substr(i, 32);
+		result.setData(position, binaryToDecimal(temp));
+		position--;
+		temp.clear();
+	}
+	return result;
 }
 
 
-// Tính giá trị thập phân của QInt
-string DecimalValue(QInt s)
+// Chuyển đổi 1 chuỗi decimal thành QInt
+QInt convertDecimalToQInt(string decimal)
+{
+	bool negative = false;
+	if (decimal[0] == '-')
+	{
+		negative = true;
+		decimal.erase(decimal.begin());
+	}
+	string binResult = decimalToBinary(decimal);
+	QInt result(binResult);
+	if (negative)
+	{
+		result = result.SoBu2();
+	}
+	return result;
+}
+
+
+// Chuyển đổi 1 chuỗi hex thành QInt
+QInt convertHexToQInt(string hex)
+{
+	bool negative = false;
+	if (hex[0] == '-')
+	{
+		negative = true;
+		hex.erase(hex.begin());
+	}
+	string binResult = hexToBinary(hex);
+	QInt result(binResult);
+	if (negative)
+	{
+		result = result.SoBu2();
+	}
+	return result;
+}
+
+
+// Chuyển đổi QInt thành 1 chuỗi
+
+// Đổi 1 QInt sang dạng nhị phân
+string convertToBinary(QInt s)
+{
+	bool startPrint = false;
+	vector<uint32_t> data = s.getData();
+	string binary;
+	for (int i = data.size() - 1; i >= 0; i--)
+	{
+		if (data[i] != 0)
+		{
+			startPrint = true;
+
+		}
+		if (startPrint)
+		{
+			for (int j = 0; j < 32; j++)
+			{
+				int bitNow = ((data[i] >> (31 - j)) & 1);
+				binary.push_back(bitNow + '0');
+			}
+		}
+
+	}
+
+	// Xoá các bit 0 đầu chuỗi
+	if (binary.find('1') != string::npos)
+	{
+		binary.erase(binary.begin(), binary.begin() + binary.find('1'));
+	}
+	else
+	{
+		return "0";
+	}
+
+	return binary;
+}
+
+// Convert QInt thành dạng thập phân
+string convertQIntToDecimal(QInt s)
 {
 	string Binary = convertToBinary(s);
 	string Decimal;
@@ -241,4 +287,11 @@ string DecimalValue(QInt s)
 		Decimal = '-' + temp;
 	}
 	return Decimal;
+}
+
+// Convert 1 số QInt thành dạng thập lục phân
+string convertQIntToHex(QInt s)
+{
+	string binary = convertToBinary(s);
+	return convertBinaryToHex(binary);
 }
