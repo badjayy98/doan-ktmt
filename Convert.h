@@ -153,7 +153,7 @@ string convertBinaryToHex(string binary)
 // Chuyển đổi chuỗi thành QInt
 
 // Convert 1 chuỗi binary thành 1 QInt
-QInt convertToDecimal(string Binary)
+QInt convertBinaryToQInt(string Binary)
 {
 	QInt result;
 	string temp;

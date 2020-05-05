@@ -165,7 +165,7 @@ public:
 	// TOÁN TỬ BIT >> <<, ROR, ROL -------------------------------------------------------------------------
 
 	// Ý tưởng : Biến QInt thành dạng chuỗi binary, lấy chuỗi con dựa theo số bit dịch chuyển, thêm '0' phía sau để đủ 128 bit, chuyển từ binary thành QInt
-	QInt operator << (int n)
+	QInt operator << (QInt n)
 	{
 		// Chạy tốt khi n < 32 bit, tuy nhiên khi n >= 32 bit thì chạy không đúng
 		//QInt result;
@@ -177,7 +177,7 @@ public:
 		//result.data[0] = (data[0] << n) | (0 >> (32 - n));
 		//return result;
 
-		if (n > 128)
+		if (n >= QInt("10000000"))
 		{
 			return QInt("0");
 		}
@@ -191,7 +191,7 @@ public:
 
 		string resultAfterSL;
 
-		resultAfterSL = binary.substr(n, 128 - n);
+		resultAfterSL = binary.substr(n.getData()[0], 128 - (int)n.getData()[0]);
 
 		while (resultAfterSL.size() != 128)
 		{
@@ -203,9 +203,9 @@ public:
 	}
 
 	// Toán tử >>
-	QInt operator >> (int n)
+	QInt operator >> (QInt n)
 	{
-		if (n > 128)
+		if (n >= QInt("10000000"))
 		{
 			return QInt("0");
 		}
@@ -217,7 +217,7 @@ public:
 
 		string resultAfterSr; 
 
-		resultAfterSr = binary.substr(0, 128 - n);
+		resultAfterSr = binary.substr(0, 128 - (int)n.getData()[0]);
 
 		while (resultAfterSr.size() != 128)
 		{
@@ -231,12 +231,13 @@ public:
 
 	// Toán tử ROL
 
-	QInt ROL(int n)
+	QInt ROL(QInt n)
 	{
+		QInt du = n % QInt("10000000");
 		string binary = convertToBinary();
 
-		string nBitDau = binary.substr(0, n);
-		string remain = binary.substr(n, binary.size() - n);
+		string nBitDau = binary.substr(0, du.getData()[0]);
+		string remain = binary.substr(du.getData()[0], binary.size() - du.getData()[0]);
 		string resultBinary = remain + nBitDau;
 
 		while (resultBinary.size() != 128)
@@ -251,12 +252,13 @@ public:
 
 	// Toán tử ROR
 
-	QInt ROR(int n)
+	QInt ROR(QInt n)
 	{
+		QInt du = n % QInt("10000000");
 		string binary = convertToBinary();
 
-		string nBitCuoi = binary.substr(binary.size() - n, n);
-		string remain = binary.substr(0, binary.size() - n);
+		string nBitCuoi = binary.substr(binary.size() - du.getData()[0], du.getData()[0]);
+		string remain = binary.substr(0, binary.size() - du.getData()[0]);
 
 		string resultBinary = nBitCuoi + remain; 
 
@@ -431,13 +433,14 @@ public:
 	// Toán tử +
 	QInt operator+(QInt s)
 	{
+		QInt one("1");
 		QInt result = *this;
 		QInt carry("1");
 		while (!(carry.isEqualZero()))
 		{
 			carry = (result & s);
 			result = result ^ s;
-			s = carry << 1;
+			s = carry << one;
 		}
 		return result;
 	}
@@ -453,6 +456,7 @@ public:
 
 	QInt operator *(QInt s)
 	{
+		QInt one("1");
 		QInt thaythe = *this;
 		bool negative = false; 
 		if (thaythe.isNegative() && s.isNegative())
@@ -483,8 +487,8 @@ public:
 			{
 				result = result + thaythe;
 			}
-			thaythe = thaythe << 1;
-			s = s >> 1; 
+			thaythe = thaythe << one;
+			s = s >> one; 
 		}
 
 		if (negative)
@@ -498,6 +502,7 @@ public:
 
 	QInt operator /(QInt bichia)
 	{
+		QInt one("1");
 		if (bichia.isEqualZero())
 		{
 			cout << "Khong the chia cho 0" << endl;
@@ -535,14 +540,14 @@ public:
 
 		while (bichia <= sochia)
 		{
-			bichia = bichia << 1; 
-			temp = temp << 1; 
+			bichia = bichia << one; 
+			temp = temp << one; 
 		}
 
 		while (temp > QInt("1"))
 		{
-			bichia = bichia >> 1; 
-			temp = temp >> 1; 
+			bichia = bichia >> one; 
+			temp = temp >> one; 
 
 			if (sochia >= bichia)
 			{
