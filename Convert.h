@@ -1,8 +1,4 @@
-﻿#include "QInt.h"
-
-
-
-
+﻿#include "QFloat.h"
 
 // Convert 1 chuỗi binary thành 1 chuỗi hexadecimal
 string convertBinaryToHex(string binary)
