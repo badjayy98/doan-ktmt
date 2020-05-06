@@ -3,6 +3,7 @@
 #endif
 
 #include "Function.h"
+#include <stdint.h>
 
 // Ý tưởng : biểu diễn số nguyên dưới dạng 1 vecto chứa 4 unsigned int, 1 unsigned int = 4 byte.
 

@@ -57,13 +57,13 @@ string ThucHienPhepTinh2QInt(QInt toantu1, QInt toantu2, string pheptoan, string
 	}
 	else if (pheptoan == "<<")
 	{
-		result == toantu1 << toantu2;
+		result = toantu1 << toantu2; 
 	}
-	else if (pheptoan == "ROR")
+	else if (pheptoan == "ror")
 	{
 		result = toantu1.ROR(toantu2);
 	}
-	else if (pheptoan == "ROL")
+	else if (pheptoan == "rol")
 	{
 		result = toantu1.ROL(toantu2);
 	}
@@ -132,18 +132,19 @@ string ThucHienPhepTinh2QInt(QInt toantu1, QInt toantu2, string pheptoan, string
 // Xử lý các phép tính lấy được từ các dòng của input.txt
 void XuLyPhepTinh(vector<string> calc, string fileoutput)
 {
-	cout << "Phep tinh : ";
+	/*cout << "Phep tinh : ";
 	for (int i = 0; i < calc.size(); i++)
 	{
 		cout << calc[i] << " ";
 	}
-	cout << endl;
+	cout << endl;*/
 	QInt toantu1, toantu2, quyDoiVeQInt;
 	ofstream ofile;
 	ofile.open(fileoutput, ios_base::app);
-	// Yêu cầu quy đổi
+	// Yêu cầu quy đổi hoặc NOT
 	if (calc.size() == 3)
 	{
+		// NOT
 		if (calc[1] == "~")
 		{
 			string result;
@@ -168,6 +169,7 @@ void XuLyPhepTinh(vector<string> calc, string fileoutput)
 			ofile << result << endl;
 
 		}
+		// Quy đổi
 		else
 		{
 			string result;
@@ -204,7 +206,7 @@ void XuLyPhepTinh(vector<string> calc, string fileoutput)
 
 	}
 
-	// Phép tính
+	// Phép tính giữa 2 toán tử 
 	else
 	{
 		string base;
@@ -249,8 +251,6 @@ void XuLyPhepTinh(vector<string> calc, string fileoutput)
 				toantu2 = QInt::convertHexToQInt(calc[3]);
 			}
 		}
-
-
 		string result = ThucHienPhepTinh2QInt(toantu1, toantu2, calc[2], base);
 		ofile << result << endl;
 	}

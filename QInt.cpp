@@ -249,16 +249,6 @@ QInt QInt::SoBu2()
 
 QInt QInt::operator << (QInt n)
 {
-	// Chạy tốt khi n < 32 bit, tuy nhiên khi n >= 32 bit thì chạy không đúng
-	//QInt result;
-	//
-	//for (int i = 3; i >= 1; i--)
-	//{
-	//	result.data[i] = (data[i] << n) | (data[i - 1] >> (32 - n));
-	//}
-	//result.data[0] = (data[0] << n) | (0 >> (32 - n));
-	//return result;
-
 	if (n >= QInt("10000000"))
 	{
 		return QInt("0");
@@ -408,7 +398,23 @@ QInt QInt::operator~()
 
 bool QInt::operator >(QInt s)
 {
-	for (int i = 3; i >= 0; i--)
+	bool neg1 = false, neg2 = false, result; 
+	neg1 = this->isNegative();
+	neg2 = s.isNegative();
+	int i; 
+
+	if (neg1 && neg2)
+	{
+	}
+	else if (!neg1 && neg2)
+	{
+		return true; 
+	}
+	else if (neg1 && !neg2)
+	{
+		return false; 
+	}
+	for (i = 3; i >= 0; i--)
 	{
 		if (this->data[i] < s.data[i])
 		{
@@ -424,7 +430,23 @@ bool QInt::operator >(QInt s)
 
 bool QInt::operator < (QInt s)
 {
-	for (int i = 3; i >= 0; i--)
+	bool neg1 = false, neg2 = false, nguoc = false;
+	neg1 = this->isNegative();
+	neg2 = s.isNegative();
+	int i;
+
+	if (neg1 && neg2)
+	{
+	}
+	else if (!neg1 && neg2)
+	{
+		return false; 
+	}
+	else if (neg1 && !neg2)
+	{
+		return true; 
+	}
+	for (i = 3; i >= 0; i--)
 	{
 		if (this->data[i] > s.data[i])
 		{
@@ -432,7 +454,7 @@ bool QInt::operator < (QInt s)
 		}
 		if (this->data[i] < s.data[i])
 		{
-			return true;
+			return true; 
 		}
 	}
 	return false;
@@ -459,11 +481,7 @@ bool QInt::operator >= (QInt s)
 	}
 	else
 	{
-		if (*this > s)
-		{
-			return true; 
-		}
-		return false; 
+		return *this > s; 
 	}
 }
 
@@ -476,11 +494,7 @@ bool QInt::operator <= (QInt s)
 	}
 	else
 	{
-		if (*this < s)
-		{
-			return true;
-		}
-		return false; 
+		return *this < s; 
 	}
 
 }
@@ -607,9 +621,6 @@ QInt QInt::operator /(QInt bichia)
 		bichia = bichia << one;
 		temp = temp << one;
 	}
-
-	cout << "So chia : " << sochia.convertQIntToDecimal() << endl;
-	cout << "So bi chia : " << bichia.convertQIntToDecimal() << endl;
 
 	while (temp > QInt("1"))
 	{

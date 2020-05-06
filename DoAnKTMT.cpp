@@ -1,20 +1,8 @@
-﻿#include "QFloat.h"
+﻿#include "ChamTuDongQInt.h"
 
 int main(int argc, char *argv[])
 {
-	QInt a; 
-	cin >> a; 
-	QInt b;
-	cin >> b; 
-
-	QInt c = a + b; 
-	QInt d = a - b;
-	QInt e = a * b;
-	QInt f = a / b;
-
-	cout << c; 
-	cout << d;
-	cout << e;
-	cout << f; 
-
+	string fileinput = argv[1];
+	string fileoutput = argv[2];
+	ThucHienChamTuDong(fileinput, fileoutput);
 }
