@@ -50,7 +50,6 @@ string hexToBinary(string hex);
 
 // Tính 2^n
 string LuyThua2(int n);
-
 string convertBinaryToHex(string binary);
 
 

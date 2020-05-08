@@ -1,4 +1,6 @@
 ﻿#include "ChamTuDongQInt.h"
+
+// Chuyển kết quả phép tính về hệ mong muốn
 string convertToBase(QInt s, string base)
 {
 	string result;
@@ -126,9 +128,6 @@ string ThucHienPhepTinh2QInt(QInt toantu1, QInt toantu2, string pheptoan, string
 	return res;
 }
 
-// Thực hiện phép tính giữa QInt với 1 số
-
-
 // Xử lý các phép tính lấy được từ các dòng của input.txt
 void XuLyPhepTinh(vector<string> calc, string fileoutput)
 {
@@ -255,22 +254,32 @@ void XuLyPhepTinh(vector<string> calc, string fileoutput)
 		ofile << result << endl;
 	}
 }
+
+// Thực thi việc chấm tự động
 void ThucHienChamTuDong(string fileinput, string fileoutput)
 {
-	ifstream ifile(fileinput);
-	ofstream ofile;
-	ofile.open(fileoutput, ios::out | ios::trunc);
-	string line;
-	string ptu;
-
-	while (getline(ifile, line))
+	try
 	{
-		vector<string> calc;
-		istringstream iss(line);
-		while (iss >> ptu)
+		ifstream ifile(fileinput);
+		ofstream ofile;
+		ofile.open(fileoutput, ios::out | ios::trunc);
+		string line;
+		string ptu;
+
+		while (getline(ifile, line))
 		{
-			calc.push_back(ptu);
+			vector<string> calc;
+			istringstream iss(line);
+			while (iss >> ptu)
+			{
+				calc.push_back(ptu);
+			}
+			XuLyPhepTinh(calc, fileoutput);
 		}
-		XuLyPhepTinh(calc, fileoutput);
 	}
+	catch (const char* msg)
+	{
+		cout << msg << endl; 
+	}
+	
 }

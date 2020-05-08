@@ -385,6 +385,10 @@ bool isEven(string number)
 // Chuyển chuỗi decimal thành chuỗi binary
 string decimalToBinary(string decimal)
 {
+    if (decimal == "0")
+    {
+        return "0";
+    }
     string result = "";
 
     if (decimal[0] == '-')
@@ -549,6 +553,7 @@ string LuyThua2(int n)
     return result;
 }
 
+// Chuyển chuỗi binary thành chuỗi hex
 string convertBinaryToHex(string binary)
 {
     string temp;
@@ -682,3 +687,4 @@ string convertBinaryToHex(string binary)
     }
     return result;
 }
+

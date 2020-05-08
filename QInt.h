@@ -88,6 +88,8 @@ public:
 	QInt operator *(QInt s);
 	QInt operator /(QInt bichia);
 	QInt operator %(QInt s);
+
+	QInt chia(QInt m);
 };
 
 

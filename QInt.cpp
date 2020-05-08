@@ -1,5 +1,6 @@
 ﻿#include "QInt.h"
 
+// Khởi tạo mặc định QInt = 0 
 QInt::QInt()
 {
 	this->data.resize(4);
@@ -33,16 +34,19 @@ QInt::QInt(string binary)
 	}
 }
 
+// Hàm lấy dữ liệu
 vector<unsigned int> QInt::getData()
 {
 	return data;
 }
 
+// Set data
 void QInt::setData(int position, int value)
 {
 	data[position] = value;
 }
 
+// Kiểm tra QInt có bằng 0 hay ko
 bool QInt::isEqualZero()
 {
 	for (int i = 0; i < this->getData().size(); i++)
@@ -299,6 +303,7 @@ QInt QInt::operator >> (QInt n)
 	return resultQInt;
 }
 
+// Toán tử ROL
 QInt QInt::ROL(QInt n)
 {
 	QInt du = n % QInt("10000000");
@@ -318,6 +323,7 @@ QInt QInt::ROL(QInt n)
 
 }
 
+// Toán tử ROR
 QInt QInt::ROR(QInt n)
 {
 	QInt du = n % QInt("10000000");
@@ -396,6 +402,7 @@ QInt QInt::operator~()
 	return result;
 }
 
+// So sánh lớn hơn
 bool QInt::operator >(QInt s)
 {
 	bool neg1 = false, neg2 = false, result; 
@@ -428,6 +435,7 @@ bool QInt::operator >(QInt s)
 	return false; 
 }
 
+//  So sánh nhỏ hơn
 bool QInt::operator < (QInt s)
 {
 	bool neg1 = false, neg2 = false, nguoc = false;
@@ -460,6 +468,7 @@ bool QInt::operator < (QInt s)
 	return false;
 }
 
+// So sánh =
 bool QInt::operator == (QInt s)
 {
 	for (int i = 3; i >= 0; i--)
@@ -472,7 +481,7 @@ bool QInt::operator == (QInt s)
 	return true;
 }
 
-// Toán tử so sánh >=
+// So sánh >=
 bool QInt::operator >= (QInt s)
 {
 	if (*this == s)
@@ -485,7 +494,7 @@ bool QInt::operator >= (QInt s)
 	}
 }
 
-// Toán tử so sánh <=
+// So sánh <=
 bool QInt::operator <= (QInt s)
 {
 	if (*this == s)
