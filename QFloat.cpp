@@ -41,148 +41,17 @@ string FloatMul2(string number)
 	}
 	return result; 
 }
-
-// Đổi từ số nguyên thành số nhị phân
-string toBinary(string number) {
-	string result = "";
-	string x = number;
-	while (x != "0") {
-		int bit = x.back() % 2;
-		if (bit == 1) result = "1" + result;
-		else result = "0" + result;
-		x = Division2(x);
-	}
-	return result;
-}
-
-// Nhân đôi số thực
-string mulFractionByTwo(string number) {
-	int len = number.length();
-	string result;
-	int k = number.find('.');
-	int carry = 0, tmp;
-
-	if (k != string::npos) {
-		// Nhân 2 với phần thập phân
-		for (int i = len - 1; i > k; --i) {
-			tmp = (number[i] - '0') * 2 + carry;
-			if (tmp >= 10) {
-				result.insert(result.begin(), char(tmp - 10 + '0'));
-				carry = 1;
-			}
-			else {
-				result.insert(result.begin(), char(tmp + '0'));
-				carry = 0;
-			}
-		}
-		result.insert(result.begin(), '.');
-
-		// Nhân 2 với phần nguyên trước dấu '.'
-		for (int i = k - 1; i >= 0; --i) {
-			tmp = (number[i] - '0') * 2 + carry;
-			if (tmp >= 10) {
-				result.insert(result.begin(), char(tmp - 10 + '0'));
-				carry = 1;
-			}
-			else {
-				result.insert(result.begin(), char(tmp + '0'));
-				carry = 0;
-			}
-		}
-	}
-	else {
-		for (int i = len - 1; i >= 0; --i) {
-			tmp = (number[i] - 48) * 2 + carry;
-			if (tmp >= 10) {
-				result.insert(result.begin(), char(tmp - 10 + '0'));
-				carry = 1;
-			}
-			else {
-				result.insert(result.begin(), char(tmp + '0'));
-				carry = 0;
-			}
-		}
-	}
-	if (carry == 1) result.insert(result.begin(), '1');
-	return result;
-}
-
-string toStrBit(string number, int& exp) {
-	int pos = number.find('.');
-	string intPart, fractionPart;
-	if (pos == string::npos) {
-		intPart = number;
-		fractionPart = "0";
-	}
-	else {
-		intPart = number.substr(0, pos);
-		fractionPart = number.substr(pos);
-		fractionPart.insert(fractionPart.begin(), '0');
-	}
-	// Chuyển string của phần nguyên sang binary
-	intPart = toBinary(intPart);
-
-	int k = (1 << 14) - 1;
-	string fractionBit;
-
-	if (intPart != "") {
-		exp = intPart.size() - 1 + k;
-		for (int i = 0; i < 112 - int(intPart.size() - 1); ++i) {
-			fractionPart = mulFractionByTwo(fractionPart);
-			fractionBit += fractionPart[0];
-			fractionPart[0] = '0';
-		}
-	}
-	else {
-		int cnt = 0;
-		while (cnt < k) {
-			fractionPart = mulFractionByTwo(fractionPart);
-			fractionBit += fractionPart[0];
-			fractionPart[0] = '0';
-			if (fractionBit.back() == '1') break;
-			cnt++;
-		}
-
-		exp = -(cnt + 1) + k;
-		if (cnt + 1 < k) {
-			for (int i = 0; i < 112; ++i) {
-				fractionPart = mulFractionByTwo(fractionPart);
-				fractionBit += fractionPart[0];
-				fractionPart[0] = '0';
-			}
-		}
-		else {
-			fractionBit = "";
-			while (exp < 1) {
-				fractionPart = mulFractionByTwo(fractionPart);
-				fractionBit += fractionPart[0];
-				fractionPart[0] = '0';
-				exp++;
-			}
-			string res = intPart + fractionBit;
-			while (res.size() < 113) res += '0';
-			return res;
-		}
-	}
-
-	string res = intPart + fractionBit;
-	while (res[0] == '0') res.erase(0, 1);
-	while (res.size() < 113) res += '0';
-	return res;
-}
-
-
-
-
-string convertFloatToBinary(string number)
+// Exp = số mũ, trả về chuỗi significand
+string getSignificandAndExponent(string number, int &exp)
 {
-	bool CanLamTron = true;
+	string result; 
 	bool negative = false;
 	if (number[0] == '-')
 	{
 		negative = true;
 		number.erase(number.begin());
 	}
+	int K = pow((double)2, (double)14) - 1;
 
 	// Nếu nhập số nguyên, chuyển về dạng .0
 	size_t foundPos;
@@ -199,109 +68,252 @@ string convertFloatToBinary(string number)
 
 	// Chuyển phần nguyên sang binary
 	nguyen = decimalToBinary(nguyen);
-	if (nguyen == "")
-	{
-		nguyen = "0";
-	}
 
 	// Chuyển phần thập phân sang binary
 	string temp, binThapPhan = "";
-	while (nguyen.size() + binThapPhan.size() < 113)
+	
+	if (nguyen != "0")
 	{
-		thapPhan = FloatMul2(thapPhan);
-		binThapPhan += thapPhan[0];
-		thapPhan[0] = '0';
-	}
-	string result = nguyen  + binThapPhan;
-
-	/*if (CanLamTron)
-	{
-		if (negative)
+		exp = nguyen.size() - 1 + K;
+		for (int i = 0; i < 112 - nguyen.size(); i++)
 		{
-			QInt bin = QInt::convertBinaryToQInt(binThapPhan);
-			QInt res = bin - QInt("1");
-			binThapPhan = res.convertQIntToBinary();
-			while (binThapPhan.size() < 112 - nguyen.size())
-			{
-				binThapPhan += '0';
-			}
-			result = nguyen  + binThapPhan;
+			thapPhan = FloatMul2(thapPhan);
+			binThapPhan += thapPhan[0];
+			thapPhan[0] = '0';
 		}
+	}
+	else
+	{
+		int gap1 = 0; 
+		while (gap1 < K)
+		{
+			thapPhan = FloatMul2(thapPhan);
+			binThapPhan += thapPhan[0];
+			thapPhan[0] = '0';
+			if (binThapPhan.back() == '1')
+			{
+				break;
+			}
+			gap1++;
+		}
+		// gap1 + 1 la so bit phai dich de phan nguyen la 1
+		exp = K - (gap1 + 1);
+
+		// So chuan hoa
+		if (gap1 + 1 < K)
+		{
+			for (int i = 0; i < 112; i++)
+			{
+				thapPhan = FloatMul2(thapPhan);
+				binThapPhan += thapPhan[0];
+				thapPhan[0] = '0';
+			}
+		}
+
+		// So khong the chuan hoa -> bien no thanh so co the chuan hoa bang cach gan exp = 1
 		else
 		{
-			QInt bin = QInt::convertBinaryToQInt(binThapPhan);
-			QInt res = bin + QInt("1");
-			binThapPhan = res.convertQIntToBinary();
-			while (binThapPhan.size() > 112 - nguyen.size())
+			binThapPhan = "";
+			while (exp < 1)
 			{
-				binThapPhan.pop_back();
+				thapPhan = FloatMul2(thapPhan);
+				binThapPhan += thapPhan[0];
+				thapPhan[0] = '0';
+				exp++;
+				result = nguyen + binThapPhan;
+				while (result.size() < 112)
+				{
+					result += '0';
+				}
+				return result; 
 			}
-			result = nguyen  + binThapPhan;
 		}
-	}*/
-
-	return result;
-}
-
-string getSignifcand(string binary)
-{
-	// Chuẩn hoá dạng trị thành 1.xxx
-	int foundPos = (int)binary.find('.');
-	string phanNguyen = binary.substr(0, foundPos);
-	string phanThapPhan = binary.substr(foundPos + 1);
-
-	while (phanNguyen[phanNguyen.size() - 1] == '0')
-	{
-		phanNguyen += phanThapPhan[0];
-		phanThapPhan.erase(0, 1);
 	}
-	string result = phanNguyen + '.' + phanThapPhan;
+	if (nguyen != "" && nguyen != "0")
+	{
+		nguyen = nguyen.substr(1);
+	}
+	result = nguyen  + binThapPhan;
+	//Xoa bit 0 thua o dau
+	while (result[0] == '0')
+	{
+		result.erase(0, 1);
+	}
+	while (result.size() < 112)
+	{
+		result += '0';
+	}
 	return result;
-}
-
-string getExponent(string binary)
-{
-	string result;
-	int dich = (int)binary.find('.') - 1;
-	int exp = 32767 + dich;
-	return result;
-
 }
 
 
 QFloat::QFloat()
 {
-	for (int i = 0; i < 16; i++)
+	data.resize(4);
+	for (int i = 0; i < 4; i++)
 	{
 		data[i] = 0;
 	}
 }
 QFloat::QFloat(string number)
 {
-
-
-}
-void QFloat::setBit(int position, int value)
-{
-	int posToInsert = (position - 1) / 8;
-	int offset = (8 - (position % 8));
-	data[posToInsert] = data[posToInsert] | (1 << offset);
-}
-// Lấy vị trí phần tử để đặt bit, phục vụ khởi tạo QInt với 1 chuỗi binary
-int QFloat::getPosition(int size, int i)
-{
-	return (size - 1 - i) / 32;
-}
-
-// Tính toán xem sẽ phải dịch chuyển bao nhiêu bit, phục vụ khởi tạo QInt với 1 chuỗi binary
-int QFloat::getOffset(int size, int i)
-{
-	if ((size - i) % 32 == 0)
+	data.resize(4);
+	if (number[0] == '-')
 	{
-		return 31;
+		setBit(1, 1);
+	}
+	// Nếu nhận số vô cực
+	if (number == "Inf" || number == "-Inf")
+	{
+		// Set toan bo 15 bit sau bit dau = 1
+		for (int i = 2; i <= 16; i++)
+		{
+			setBit(i, 1);
+		}
+	}
+	else if (number == "Nan")
+	{
+		// Set toan bo 15 bit sau bit dau = 1
+		for (int i = 2; i <= 16; i++)
+		{
+			setBit(i, 1);
+		}
+		data[3] = 1;
 	}
 	else
 	{
-		return (size - i) % 32 - 1;
+		int exp;
+		string significand;
+		significand = getSignificandAndExponent(number, exp);
+		for (int i = 2; i <= 16; i++)
+		{
+			int bitCanSet = ((exp >> (16 - i)) & 1);
+			setBit(i,bitCanSet);
+		}
+		for (int i = 17; i <= 128; i++)
+		{
+			if (significand[i - 17] == '0')
+			{
+				setBit(i, 0);
+			}
+			else
+			{
+				setBit(i, 1);
+			}
+		}
+
 	}
+}
+
+string QFloat::DangFloatingPoint()
+{
+	string result; 
+	for (int i = 1; i <= 128; i++)
+	{
+		result += getBit(i) + '0';
+		if (i == 1 || i == 16)
+		{
+			result += ' ';
+		}
+	}
+	return result; 
+}
+
+void QFloat::setBit(int position, int value)
+{
+	int offset; 
+	int posToInsert = (position - 1) / 32;
+	if (position % 32 != 0)
+	{
+		offset = (32 - (position % 32));
+	}
+	else
+	{
+		offset = 0;
+	}
+	data[posToInsert] = data[posToInsert] | (value << offset);
+}
+
+int QFloat::getBit(int position)
+{
+	int offset;
+	int pos = (position - 1) / 32; 
+	if (position % 32 != 0)
+	{
+		offset = 32 - (position % 32);
+	}
+	else
+	{
+		offset = 0;
+	}
+
+	return ((data[pos] >> offset) & 1); 
+}
+
+
+QFloat QFloat::convertBinaryToQFloat(string binary)
+{
+	QFloat res; 
+	if (binary[0] == '-')
+	{
+		res.setBit(1, 1);
+		binary.erase(0, 1);
+	}
+	int K = pow((double)2, (double)14) - 1;
+
+	// Nếu nhập số nguyên, chuyển về dạng .0
+	size_t foundPos;
+	if (binary.find('.') == string::npos)
+	{
+		binary += ".0";
+	}
+	foundPos = binary.find('.');
+
+	// Cắt phần nguyên và thập phân
+	string nguyen = binary.substr(0, foundPos);
+	while (nguyen[0] == '0')
+	{
+		nguyen.erase(0, 1);
+	}
+	string thapPhan = binary.substr((int)foundPos + 1);
+	int exp = nguyen.size() - 1 + K;
+
+	if (nguyen == "0" || nguyen == "")
+	{
+		while (thapPhan[0] == '0' && thapPhan.size() > 1)
+		{
+			if (exp == 1)
+			{
+				break; 
+			}
+			thapPhan.erase(0, 1);
+			exp--;
+		}
+		if (exp == 1)
+		{
+			while (thapPhan.size() > 112)
+			{
+				thapPhan.pop_back();
+			}
+		}
+	}
+	string result = nguyen + thapPhan;
+	while (result[0] == '0')
+	{
+		result.erase(0, 1);
+	}
+	while (result.size() < 112)
+	{
+		result += '0';
+	}
+	for (int i = 2; i <= 16; i++)
+	{
+		int bitCanSet = ((exp >> (16 - i)) & 1);
+		res.setBit(i, bitCanSet);
+	}
+	for (int i = 17; i <= 128; i++)
+	{
+		res.setBit(i, result[i - 17]);
+	}
+	return res; 
 }

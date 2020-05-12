@@ -6,25 +6,19 @@
 
 string FloatMul2(string number);
 
-
-string convertFloatToBinary(string number);
-
-string getSignifcand(string binary);
-
-string getExponent(string binary);
-
-string mulFractionByTwo(string number);
-
-string toStrBit(string number, int& exp);
-
+string getSignificandAndExponent(string number, int &exp);
 
 class QFloat
 {
+private:
+	vector<uint32_t> data;
 public:
-	vector <uint32_t> data;
 	QFloat();
 	QFloat(string number);
 	void setBit(int position, int value);
-	int getPosition(int size, int i);
-	int getOffset(int size, int i);
+	int getBit(int position);
+	string DangFloatingPoint();
+
+	static QFloat convertBinaryToQFloat(string binary);
 };
+
