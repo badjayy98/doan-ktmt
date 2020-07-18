@@ -1,1 +1,2 @@
-# Thiết kế kiểu dữ liệu QInt độ lớn 16 byte
+# Đồ án 1 : Thiết kế QInt - KTMT
+Đừng coi QFloat sai đấy
